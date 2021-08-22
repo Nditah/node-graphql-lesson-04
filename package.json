@@ -1,0 +1,27 @@
+{
+  "name": "node-graphql-lesson-04",
+  "version": "1.0.0",
+  "description": "Graphql backend with node, prisma, postgres and docker",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "keywords": [
+    "Graphql",
+    "Backend",
+    "Prisma",
+    "Postgre",
+    "Docker",
+    "Node.js"
+  ],
+  "author": "Nditah Sam <nditah@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^2.29.1",
+    "apollo-server": "^3.1.2",
+    "graphql": "^15.5.1"
+  },
+  "devDependencies": {
+    "prisma": "^2.29.1"
+  }
+}

@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// node-graphql/prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// model Student {
+//   id       Int     @id @default(autoincrement())
+//   email    String
+//   fullName String?
+//   dept     String?
+//   enrolled Boolean @default(false)
+// }
+
+model Student {
+  id        Int         @id @default(autoincrement())
+  email     String      @unique
+  fullName  String?
+  enrolled  Boolean     @default(false)
+  dept      Department @relation(fields: [deptId], references: [id])
+  deptId    Int
+  createdAt DateTime    @default(now())
+}
+
+model Department {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  students    Student[]
+  createdAt   DateTime  @default(now())
+}
+
+model Teacher {
+  id        Int         @id @default(autoincrement())
+  email     String      @unique
+  fullName  String
+  courses   Course[]
+  type      TeacherType @default(FULLTIME)
+  createdAt DateTime    @default(now())
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  title       String
+  description String?
+  teacher     Teacher? @relation(fields: [teacherId], references: [id])
+  teacherId   Int?
+  createdAt   DateTime @default(now())
+}
+
+enum TeacherType {
+  FULLTIME
+  PARTTIME
+}
