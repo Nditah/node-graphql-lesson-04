@@ -1,4 +1,4 @@
-//* node-graphql/src/schema.js
+//* node-graphql-lesson-04/src/schema.js
 
 const { gql } = require("apollo-server")
 
