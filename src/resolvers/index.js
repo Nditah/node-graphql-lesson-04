@@ -11,7 +11,7 @@ const Student = {
   enrolled: (parent) => parent.enrolled,
   dept: (parent, args) => {
     return prisma.department.findFirst({
-      where: { id: parent.id },
+      where: { id: parent.dept },
     });
   },
 };
@@ -21,10 +21,14 @@ const Department = {
   name: (parent) => parent.name,
   description: (parent) => parent.description,
   students: (parent, args) => {
-    return prisma.student.findFirst({
+    return prisma.department.findUnique({
         where: { id: parent.id },
-      })
-      .students();
+      }).students();
+  },
+  courses: (parent, args) => {
+    return prisma.department.findUnique({
+        where: { id: parent.id },
+      }).courses();
   },
 };
 
@@ -33,10 +37,9 @@ const Teacher = {
   email: (parent) => parent.email,
   fullName: (parent) => parent.fullName,
   courses: (parent, args) => {
-    return prisma.course.findFirst({
+    return prisma.teacher.findUnique({
         where: { id: parent.id },
-      })
-      .courses();
+      }).courses();
   },
 };
 
@@ -46,10 +49,14 @@ const Course = {
   title: (parent) => parent.title,
   description: (parent) => parent.description,
   teacher: (parent, args) => {
-    return prisma.teacher.findFirst({
+    return prisma.course.findUnique({
         where: { id: parent.id },
-      })
-      .teacher();
+      }).teacher();
+  },
+  dept: (parent, args) => {
+    return prisma.course.findUnique({
+      where: { id: parent.id },
+    }).dept();
   },
 };
 

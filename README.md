@@ -124,9 +124,6 @@ Other entities like Lessons, Fees, Marksheet, and Classes are obviously part of 
 Go to node-graphql/prisma/schema.prisma Add the following model definitions to it:
 
 ```js
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 //* node-graphql-lesson-04/prisma/schema.prisma
 
 datasource db {
@@ -139,46 +136,62 @@ generator client {
 }
 
 model Student {
-  id        Int         @id @default(autoincrement())
-  email     String      @unique
-  fullName  String?
-  enrolled  Boolean     @default(false)
+  id        Int        @id @default(autoincrement())
+  email     String     @unique @db.VarChar(255)
+  fullName  String?    @db.VarChar(255)
+  enrolled  Boolean    @default(false)
   dept      Department @relation(fields: [deptId], references: [id])
   deptId    Int
-  createdAt DateTime    @default(now())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map(name: "student")
 }
 
 model Department {
   id          Int       @id @default(autoincrement())
   name        String    @unique
-  description String?
+  description String?   @db.VarChar(500)
   students    Student[]
+  courses     Course[]
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map(name: "department")
 }
 
 model Teacher {
   id        Int         @id @default(autoincrement())
-  email     String      @unique
-  fullName  String
+  email     String      @unique @db.VarChar(255)
+  fullName  String?     @db.VarChar(255)
   courses   Course[]
   type      TeacherType @default(FULLTIME)
   createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map(name: "teacher")
 }
 
 model Course {
-  id          Int      @id @default(autoincrement())
-  code        String   @unique
-  title       String
-  description String?
-  teacher     Teacher? @relation(fields: [teacherId], references: [id])
+  id          Int         @id @default(autoincrement())
+  code        String      @unique
+  title       String      @db.VarChar(255)
+  description String?     @db.VarChar(500)
+  teacher     Teacher?    @relation(fields: [teacherId], references: [id])
   teacherId   Int?
-  createdAt   DateTime @default(now())
+  dept        Department? @relation(fields: [deptId], references: [id])
+  deptId      Int?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map(name: "course")
 }
 
 enum TeacherType {
   FULLTIME
   PARTTIME
 }
+
 ```
 
 
@@ -283,13 +296,18 @@ const typeDefs = gql `
     fullName: String!
     dept: Department!
     enrolled: Boolean
+    updatedAt: String
+    createdAt: String
   }
 
   type Department {
     id: ID!
     name: String!
-    description: String!
+    description: String
     students: [Student]
+    courses: [Course]
+    updatedAt: String
+    createdAt: String
   }
 
   type Teacher {
@@ -297,6 +315,9 @@ const typeDefs = gql `
     email: String!
     fullName: String!
     courses: [Course]
+    type: TeacherType
+    updatedAt: String
+    createdAt: String
   }
 
   type Course {
@@ -305,17 +326,20 @@ const typeDefs = gql `
     title: String!
     description: String
     teacher: Teacher
+    dept: Department
+    updatedAt: String
+    createdAt: String
   }
 
   input TeacherCreateInput {
     email: String!
-    fullName: String
+    fullName: String!
     courses: [CourseCreateWithoutTeacherInput!]
   }
 
   input CourseCreateWithoutTeacherInput {
     code: String!
-    name: String!
+    title: String!
     description: String
   }
 
@@ -339,13 +363,17 @@ const typeDefs = gql `
     createDepartment(name: String!, description: String): Department!
   }
 
+enum TeacherType {
+  FULLTIME
+  PARTTIME
+}
 `
 
 module.exports = {
     typeDefs,
   }
   
-  ```
+```
 
 
  In this updated code, you’re adding the following changes to the GraphQL schema:
@@ -406,8 +434,8 @@ const Mutation = {
     createTeacher: (parent, args) => {
       return prisma.teacher.create({
         data: {
-          email: args.email,
-          fullName: args.fullName,
+          email: args.data.email,
+          fullName: args.data.fullName,
           courses: {
             create: args.data.courses,
           },
@@ -416,6 +444,7 @@ const Mutation = {
     },
   
     createCourse: (parent, args) => {
+      console.log(parent, args)
       return prisma.course.create({
         data: {
           code: args.code,
@@ -440,6 +469,7 @@ const Mutation = {
   module.exports = {
     Mutation,
   }
+  
   
 ```
 
@@ -519,7 +549,7 @@ const Student = {
   enrolled: (parent) => parent.enrolled,
   dept: (parent, args) => {
     return prisma.department.findFirst({
-      where: { id: parent.id },
+      where: { id: parent.dept },
     });
   },
 };
@@ -529,10 +559,14 @@ const Department = {
   name: (parent) => parent.name,
   description: (parent) => parent.description,
   students: (parent, args) => {
-    return prisma.student.findFirst({
+    return prisma.department.findUnique({
         where: { id: parent.id },
-      })
-      .students();
+      }).students();
+  },
+  courses: (parent, args) => {
+    return prisma.department.findUnique({
+        where: { id: parent.id },
+      }).courses();
   },
 };
 
@@ -541,10 +575,9 @@ const Teacher = {
   email: (parent) => parent.email,
   fullName: (parent) => parent.fullName,
   courses: (parent, args) => {
-    return prisma.course.findFirst({
+    return prisma.teacher.findUnique({
         where: { id: parent.id },
-      })
-      .courses();
+      }).courses();
   },
 };
 
@@ -554,10 +587,14 @@ const Course = {
   title: (parent) => parent.title,
   description: (parent) => parent.description,
   teacher: (parent, args) => {
-    return prisma.teacher.findFirst({
+    return prisma.course.findUnique({
         where: { id: parent.id },
-      })
-      .teacher();
+      }).teacher();
+  },
+  dept: (parent, args) => {
+    return prisma.course.findUnique({
+      where: { id: parent.id },
+    }).dept();
   },
 };
 
@@ -573,6 +610,7 @@ const resolvers = {
 module.exports = {
   resolvers,
 };
+
 ```
 
 Let’s break down the changes to the resolvers:
@@ -615,7 +653,40 @@ server.listen({ port }, () => console.log(`Server runs at: http://localhost:${po
 Start the server to test the GraphQL API:
 
     $  npm start
+    $  npm install nodemon -D
  
+
+Finally, your package.json file looks like:
+```json
+{
+  "name": "node-graphql-lesson-04",
+  "version": "1.0.0",
+  "description": "Graphql backend with node, prisma, postgres and docker",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/"
+  },
+  "keywords": [
+    "Graphql",
+    "Backend",
+    "Prisma",
+    "Postgre",
+    "Docker",
+    "Node.js"
+  ],
+  "author": "Nditah Sam <nditah@telixia.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^2.29.1",
+    "apollo-server": "^3.1.2",
+    "graphql": "^15.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12",
+    "prisma": "^2.29.1"
+  }
+}
+```
 
 ## 🔷  Step 7 — Testing and Deployment
 
@@ -647,16 +718,11 @@ mutation {
 
 ```gql
 
-mutation {
-  createCourse(
-    teacherEmail: "yohanne@telixia.com"
-    code: "DAML"
-    name: "Data Analytics and Machine Learning"
-    description: "Data Analytics and Machine Learning with PowerBi, Tableau, and AutoML"
-  ) {
+mutation CreateCourseMutation($createCourseCode: String!, $createCourseTitle: String!) {
+  createCourse(code: $createCourseCode, title: $createCourseTitle) {
     id
     code
-    name
+    title
     description
     teacher {
       id
@@ -669,14 +735,16 @@ mutation {
  ### Create Teacher
 
 ```gql
-mutation {
-  createTeacher(data: { 
-    email: "yohanne@telixia.com",
-    fullName: "Yohanne"
-  }) {
+mutation CreateTeacherMutation($createTeacherData: TeacherCreateInput!) {
+  createTeacher(data: $createTeacherData) {
     id
-    email
     fullName
+    createdAt
+    courses {
+      id
+      code
+      title
+    }
   }
 }
 ```
@@ -701,3 +769,8 @@ Even though this lesson is not meant to compare REST vs. Graphql, it should be h
 🔷 While GraphQL simplifies data consumption, REST design standards are strongly favoured by many sectors due to cache-ability features, security, tooling community and ultimate reliability. For this reason and its storied record, many web services favour REST design.
 
 🔷 Regardless of their choice, backend developers must understand exactly how frontend users will interact with their APIs to make the correct design choices. Though some API styles are easier to adopt than others, with the right documentation and walk-throughs in place, backend engineers can construct a high-quality API platform that frontend developers will love, no matter what style is used.
+
+
+## Further Reading
+
+[1] [Prisma Fluent-Api](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#fluent-api)

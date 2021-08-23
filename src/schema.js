@@ -10,13 +10,18 @@ const typeDefs = gql `
     fullName: String!
     dept: Department!
     enrolled: Boolean
+    updatedAt: String
+    createdAt: String
   }
 
   type Department {
     id: ID!
     name: String!
-    description: String!
+    description: String
     students: [Student]
+    courses: [Course]
+    updatedAt: String
+    createdAt: String
   }
 
   type Teacher {
@@ -24,6 +29,9 @@ const typeDefs = gql `
     email: String!
     fullName: String!
     courses: [Course]
+    type: TeacherType
+    updatedAt: String
+    createdAt: String
   }
 
   type Course {
@@ -32,17 +40,20 @@ const typeDefs = gql `
     title: String!
     description: String
     teacher: Teacher
+    dept: Department
+    updatedAt: String
+    createdAt: String
   }
 
   input TeacherCreateInput {
     email: String!
-    fullName: String
+    fullName: String!
     courses: [CourseCreateWithoutTeacherInput!]
   }
 
   input CourseCreateWithoutTeacherInput {
     code: String!
-    name: String!
+    title: String!
     description: String
   }
 
@@ -66,6 +77,10 @@ const typeDefs = gql `
     createDepartment(name: String!, description: String): Department!
   }
 
+enum TeacherType {
+  FULLTIME
+  PARTTIME
+}
 `
 
 module.exports = {

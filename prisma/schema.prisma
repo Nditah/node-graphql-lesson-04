@@ -10,40 +10,55 @@ generator client {
 }
 
 model Student {
-  id        Int         @id @default(autoincrement())
-  email     String      @unique
-  fullName  String?
-  enrolled  Boolean     @default(false)
+  id        Int        @id @default(autoincrement())
+  email     String     @unique @db.VarChar(255)
+  fullName  String?    @db.VarChar(255)
+  enrolled  Boolean    @default(false)
   dept      Department @relation(fields: [deptId], references: [id])
   deptId    Int
-  createdAt DateTime    @default(now())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map(name: "student")
 }
 
 model Department {
   id          Int       @id @default(autoincrement())
   name        String    @unique
-  description String?
+  description String?   @db.VarChar(500)
   students    Student[]
+  courses     Course[]
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map(name: "department")
 }
 
 model Teacher {
   id        Int         @id @default(autoincrement())
-  email     String      @unique
-  fullName  String
+  email     String      @unique @db.VarChar(255)
+  fullName  String?     @db.VarChar(255)
   courses   Course[]
   type      TeacherType @default(FULLTIME)
   createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map(name: "teacher")
 }
 
 model Course {
-  id          Int      @id @default(autoincrement())
-  code        String   @unique
-  title       String
-  description String?
-  teacher     Teacher? @relation(fields: [teacherId], references: [id])
+  id          Int         @id @default(autoincrement())
+  code        String      @unique
+  title       String      @db.VarChar(255)
+  description String?     @db.VarChar(500)
+  teacher     Teacher?    @relation(fields: [teacherId], references: [id])
   teacherId   Int?
-  createdAt   DateTime @default(now())
+  dept        Department? @relation(fields: [deptId], references: [id])
+  deptId      Int?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map(name: "course")
 }
 
 enum TeacherType {

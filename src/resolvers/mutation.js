@@ -26,8 +26,8 @@ const Mutation = {
     createTeacher: (parent, args) => {
       return prisma.teacher.create({
         data: {
-          email: args.email,
-          fullName: args.fullName,
+          email: args.data.email,
+          fullName: args.data.fullName,
           courses: {
             create: args.data.courses,
           },
@@ -36,6 +36,7 @@ const Mutation = {
     },
   
     createCourse: (parent, args) => {
+      console.log(parent, args)
       return prisma.course.create({
         data: {
           code: args.code,
