@@ -2,7 +2,7 @@
 
 ## Introduction
 
-GraphQL is a query language designed to build client applications by providing an intuitive and flexible syntax and system for describing their data requirements and interactions. In the previous [lesson](https://dev.to/nditah/how-to-build-a-graphql-api-with-node-prisma-and-postgres-ajg), you learnt how use GraphQL and Prisma in combination as their responsibilities complement each other. 
+GraphQL is a query language designed to build client applications by providing an intuitive and flexible syntax and system for describing their data requirements and interactions. In the previous [lesson](https://dev.to/nditah/how-to-build-a-graphql-api-with-node-prisma-and-postgres-ajg), you learnt how use GraphQL and [Prisma](https://www.prisma.io?utm_source=Prisma+Ambassador&utm_medium=Blog+post&utm_campaign=Prisma+AP+Ndi-tah+Anyeh+Samweld) in combination as their responsibilities complement each other. 
 In this lesson, you learn how to work with multiple models having complex relationships that truly mirrors a business.
 
 ## Content
