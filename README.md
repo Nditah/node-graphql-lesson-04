@@ -53,13 +53,13 @@ You have created your project and installed the dependencies. In the next step y
 
 ## 🔷  Step 2 — Setting Up Prisma with PostgreSQL
 
-The Prisma schema is the main configuration file for your Prisma setup and contains your database schema.
+The [Prisma](https://www.prisma.io?utm_source=Prisma+Ambassador&utm_medium=Blog+post&utm_campaign=Prisma+AP+Ndi-tah+Anyeh+Samweld) schema is the main configuration file for your Prisma setup and contains your database schema.
 
 Begin by installing the Prisma CLI with the following command:
 
     $ npm install prisma -D
 
-The Prisma CLI will help with database workflows such as running database migrations and generating Prisma Client.
+The [Prisma](https://www.prisma.io?utm_source=Prisma+Ambassador&utm_medium=Blog+post&utm_campaign=Prisma+AP+Ndi-tah+Anyeh+Samweld) CLI will help with database workflows such as running database migrations and generating Prisma Client.
 
 Next, you’ll set up your PostgreSQL database using Docker. Create a new Docker Compose file with the following command:
 
@@ -773,7 +773,7 @@ Even though this lesson is not meant to compare REST vs. Graphql, it should be h
 
 ## Further Reading
 
-[1] [Prisma Fluent-Api](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#fluent-api)
+[1] [Prisma Fluent-Api](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#fluent-api?utm_source=Prisma+Ambassador&utm_medium=Blog+post&utm_campaign=Prisma+AP+Ndi-tah+Anyeh+Samweld)
 [2] [Prisma Components](https://www.prisma.io/docs/concepts/components/prisma-schema/data-model)
 [3] [Introduction to GraphQl](https://www.howtographql.com/graphql-js/0-introduction/)
 [4] [Introduction to Apollo Server](https://www.apollographql.com/docs/apollo-server/)
