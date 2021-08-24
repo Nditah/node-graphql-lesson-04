@@ -774,7 +774,7 @@ Even though this lesson is not meant to compare REST vs. Graphql, it should be h
 ## Further Reading
 
 [1] [Prisma Fluent-Api](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#fluent-api?utm_source=Prisma+Ambassador&utm_medium=Blog+post&utm_campaign=Prisma+AP+Ndi-tah+Anyeh+Samweld)
-[2] [Prisma Components](https://www.prisma.io/docs/concepts/components/prisma-schema/data-model)
+[2] [Prisma Components](https://www.prisma.io/docs/concepts/components/prisma-schema/data-model?utm_source=Prisma+Ambassador&utm_medium=Blog+post&utm_campaign=Prisma+AP+Ndi-tah+Anyeh+Samweld)
 [3] [Introduction to GraphQl](https://www.howtographql.com/graphql-js/0-introduction/)
 [4] [Introduction to Apollo Server](https://www.apollographql.com/docs/apollo-server/)
 
@@ -782,4 +782,4 @@ Even though this lesson is not meant to compare REST vs. Graphql, it should be h
 _**Happy Reading & Coding**_
 
 
-#  💻 📓 📕 📗 📘 📙 📔 📒 📚 📖 💙 💜 💓 💗 💖 💘 💝   🎁 🎊 🎉
+#  💻 📓 💝 📕  💓 📗  💖  📘  💗 📙 💜 📔 📒 🎊 📚 📖 💙 🎁  🎉
